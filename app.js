@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 
 var app = express();
 mongoose.connect("mongodb://0.0.0.0:27017/employee").then(() => {
-    console.log('Database connection established');
+    console.log('Database connection established!');
 })
 
 app.use(express.json());

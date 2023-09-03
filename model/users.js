@@ -68,6 +68,8 @@ var userSchema = mongoose.Schema({
     }
 });
 
+module.exports=mongoose.model('User',userSchema);
+
 /* 
     Image Storage Strategy:
      
@@ -85,5 +87,3 @@ var userSchema = mongoose.Schema({
     Make sure to implement the chosen storage strategy accordingly.
     
 */
-
-module.exports=mongoose.model('User',userSchema);
