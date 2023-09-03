@@ -3,7 +3,7 @@ var path = require('path');
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
-const mongoose  = require('mongoose');
+var mongoose = require('mongoose');
 
 var app = express();
 mongoose.connect("mongodb://0.0.0.0:27017/employee").then(() => {
