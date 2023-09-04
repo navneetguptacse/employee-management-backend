@@ -1,7 +1,7 @@
-var mongoose = require('mongoose')
+var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
-    empName:{
+    employeeName:{
         type:String,
         required: true,
     },
@@ -11,6 +11,10 @@ var userSchema = mongoose.Schema({
     },
     username:{
         type:String,
+        required: true,
+    },
+    phoneNumber: {
+        type:Number,
         required: true,
     },
     email:{
@@ -23,7 +27,7 @@ var userSchema = mongoose.Schema({
     },
     address:{
         type: String,
-        required: true,
+        required: false,
     },
     salary:{
         type: Number,
@@ -36,7 +40,7 @@ var userSchema = mongoose.Schema({
     },
     createdAt:{
         default:new Date(),
-        type:Boolean,
+        type:Date,
         required: false,
     },
     isDeleted:{
@@ -53,18 +57,20 @@ var userSchema = mongoose.Schema({
     }, 
     aadhar:{
         type:String, 
-        required: true,
+        required: false,
     },
     photo:{
         type:String,
-        required: true,
+        required: false,
     },
     pan:{
         type:String,
-        required: true,
+        required: false,
     },
     projects :{
-        type: Array
+        type: [mongoose.Schema.Types.Object],
+        ref: "Project",
+        required: false
     }
 });
 
