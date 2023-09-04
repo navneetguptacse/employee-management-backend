@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
-var User = require('../model/users.model.');
+var User = require('../model/users.model');
 
 /* GET users listing. */
 router.post('/login', async(req, res) => {
