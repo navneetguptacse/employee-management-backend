@@ -15,9 +15,14 @@ var projectSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        default: new Date()
+        ref: "User",
+        required: true,
     },
     isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    isCompleted: {
         type: Boolean,
         default: false
     },
