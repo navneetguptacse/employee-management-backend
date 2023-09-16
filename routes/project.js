@@ -38,4 +38,25 @@ router.post(
   projectController.assignProjectToUser
 );
 
+// Update project by projectID
+router.put(
+  "/updateProjectById/:projectId",
+  authenticationMiddleware.authenticate,
+  projectController.updateProjectById
+);
+
+// Delete project by projectID
+router.delete(
+  "/deleteProjectById/:projectId",
+  authenticationMiddleware.authenticate,
+  projectController.deleteProjectById
+);
+
+// Get project by User ID
+router.get(
+  "/getProjectByUserId/:userId",
+  authenticationMiddleware.authenticate,
+  projectController.getProjectByUserId
+);
+
 module.exports = router;

@@ -24,7 +24,7 @@ const AuthenticationMiddleware = {
         userName: user.userName,
       },
       ACCESS_TOKEN_SECRET,
-      { expiresIn: "5min" }
+      { expiresIn: "1h" }
     );
     return TOKEN;
   },

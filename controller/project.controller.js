@@ -3,12 +3,11 @@ var UserModel = require("../model/users.model");
 
 const ProjectController = {
   create: async (req, res) => {
-    // Extract project data from the request body
     var { projectName, projectDescription, createdBy } = req.body;
 
     let checkIfUserExists;
     try {
-      checkIfUserExists = await UserModel.findOne({ _id: createdBy }); // Check if the user exists
+      checkIfUserExists = await UserModel.findOne({ _id: createdBy });
     } catch (err) {
       return res.status(400).send("User does not exist");
     }
@@ -17,7 +16,6 @@ const ProjectController = {
       return res.status(400).send("User does not exist");
     }
 
-    // Create a new project and save it
     var project = new ProjectModel({
       projectName,
       projectDescription,
@@ -32,7 +30,6 @@ const ProjectController = {
     return res.status(200).send("Project saved successfully");
   },
   getAllProjects: async (req, res) => {
-    // Retrieve all projects that are not marked as deleted
     let allProjects = await ProjectModel.find({ isDeleted: false });
     if (!allProjects) {
       return res.status(500).send("Something went wrong!");
@@ -41,7 +38,6 @@ const ProjectController = {
   },
   getProjectById: async (req, res) => {
     let { projectId } = req.params;
-    // Find a project by its ID that is not marked as deleted
     let project = await ProjectModel.findOne({
       _id: projectId,
       isDeleted: false,
@@ -56,12 +52,11 @@ const ProjectController = {
     let { userId } = req.params;
     let user;
     try {
-      user = await UserModel.findOne({ _id: userId }); // Check if the user with the given ID exists
+      user = await UserModel.findOne({ _id: userId });
     } catch (err) {
       return res.status(404).send("User does not exist");
     }
 
-    // Find projects where the user is a member and they are not marked as deleted
     let projects = await ProjectModel.find({
       projectMembers: userId,
       isDeleted: false,
@@ -78,7 +73,6 @@ const ProjectController = {
     let checkIfProjectExists;
 
     try {
-      // Check if the user and project exist
       checkIfUserExists = await UserModel.findOne({ _id: userId });
       checkIfProjectExists = await ProjectModel.findOne({ _id: projectId });
     } catch (err) {
@@ -89,7 +83,6 @@ const ProjectController = {
       return res.status(409).send("User already assigned to this project");
     }
 
-    // Update project members and user's projects
     checkIfProjectExists.projectMembers.push(userId);
     checkIfUserExists.projects.push(projectId);
 
@@ -100,6 +93,71 @@ const ProjectController = {
       return res.status(500).send("Something went wrong");
     }
     return res.status(200).send("Project assigned successfully");
+  },
+  updateProjectById: async (req, res) => {
+    // Update a project by its ID
+    var { projectId } = req.params;
+    var { projectName, projectDescription } = req.body;
+
+    let checkIfProjectExists;
+    try {
+      checkIfProjectExists = await ProjectModel.findOne({ _id: projectId });
+    } catch (err) {
+      return res.status(400).send("Project does not exists");
+    }
+    if (!checkIfProjectExists) {
+      return res.status(400).send("Project does not exists");
+    }
+
+    let updateProject = await ProjectModel.updateOne(
+      { _id: projectId },
+      {
+        projectName,
+        projectDescription,
+        updatedAt: new Date(),
+      }
+    );
+    if (!updateProject) {
+      return res.status(500).send("Project not updated something went wrong");
+    }
+    return res.status(200).send("Project updated successfully");
+  },
+  deleteProjectById: async (req, res) => {
+    // Delete a project by its ID
+    const { projectId } = req.params;
+
+    try {
+      const project = await ProjectModel.findOne({ _id: projectId });
+      if (!project) {
+        return res.status(404).send("Project not found");
+      }
+      project.isDeleted = true;
+      await project.save();
+
+      return res.status(200).send("Project deleted successfully");
+    } catch (error) {
+      return res.status(500).send("Something went wrong");
+    }
+  },
+  getProjectByUserId: async (req, res) => {
+    // Get projects by user ID
+    let { userId } = req.params;
+    let user;
+    try {
+      user = await UserModel.findOne({ _id: userId });
+    } catch (err) {
+      return res.status(404).send("User does not exist");
+    }
+
+    let projects = await ProjectModel.find({
+      projectMembers: userId,
+      isDeleted: false,
+    });
+
+    if (!projects || projects.length === 0) {
+      return res.status(404).send("Projects not found");
+    }
+    return res.status(200).send(projects);
   },
 };
 

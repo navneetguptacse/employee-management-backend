@@ -8,10 +8,12 @@ var taskSchema = new mongoose.Schema({
     projectId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Project",
+        required: true
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true
     },
     createdAt: {
         type: Date,
@@ -40,11 +42,10 @@ var taskSchema = new mongoose.Schema({
     },
     taskDescription: {
         type: String,
-        required: true
+        required: true, 
     },
     taskDeadline: {
         type: Date,
-        required: true,
         default: new Date()
     },
     taskPriority: {
@@ -53,3 +54,5 @@ var taskSchema = new mongoose.Schema({
         enum: ["low", "medium", "high"]
     }
 });
+
+module.exports = mongoose.model("Task", taskSchema);
