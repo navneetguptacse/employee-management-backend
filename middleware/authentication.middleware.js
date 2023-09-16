@@ -1,12 +1,13 @@
+require('dotenv').config();
+
 const jwt = require("jsonwebtoken");
-const ACCESS_TOKEN_SECRET =
-  "767288a20bae2f20fa9c0478e50ead6ade9cb31c422230bc02f0e02fdaf57787ff6ee07326051047fc81cb69bdd2f5f02272a601da97ac6bf989efa61a05d366";
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN_SECRET;
 
 const AuthenticationMiddleware = {
   authenticate: (req, res, next) => {
     try {
       let TOKEN = req.headers.authorization.split(" ")[1];
-      let decoded = jwt.verify(TOKEN, ACCESS_TOKEN_SECRET);
+      let decoded = jwt.verify(TOKEN, ACCESS_TOKEN);
       req.user = decoded;
       next();
     } catch (error) {
@@ -23,7 +24,7 @@ const AuthenticationMiddleware = {
         dob: user.dob,
         userName: user.userName,
       },
-      ACCESS_TOKEN_SECRET,
+      ACCESS_TOKEN,
       { expiresIn: "1h" }
     );
     return TOKEN;
