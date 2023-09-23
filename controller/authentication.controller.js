@@ -58,7 +58,6 @@ const AuthController = {
     let dataSaved = await user.save();
 
     if (dataSaved) {
-      // return res.send("User registered successfully");
       const token = authenticationMiddleware.generateToken({ email: email });
       const isMailSent = await sendEmail(email, token);
       if(!isMailSent){

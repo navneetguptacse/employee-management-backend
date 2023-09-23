@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN_SECRET;
@@ -37,7 +37,7 @@ const AuthenticationMiddleware = {
     } catch (error) {
       return false;
     }
-  }
+  },
 };
 
 module.exports = AuthenticationMiddleware;
