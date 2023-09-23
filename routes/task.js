@@ -33,10 +33,4 @@ router.delete(
   TaskController.deleteTaskById
 );
 
-router.get(
-  "/getTasksByUserId/:userId",
-  AuthenticationMiddleware.authenticate,
-  TaskController.getTasksByUserId
-);
-
 module.exports = router;

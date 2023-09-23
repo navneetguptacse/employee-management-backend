@@ -33,7 +33,10 @@ const TaskController = {
     const { taskId } = req.params;
     let checkIfTaskExists;
     try {
-      checkIfTaskExists = await TaskModel.findOne({ _id: taskId });
+      checkIfTaskExists = await TaskModel.findOne({
+        _id: taskId,
+        isDeleted: false,
+      });
     } catch (err) {
       return res.status(400).send("Task does not exists");
     }
@@ -46,14 +49,20 @@ const TaskController = {
     const { projectId } = req.params;
     let checkIfProjectExists;
     try {
-      checkIfProjectExists = await ProjectModel.findOne({ _id: projectId });
+      checkIfProjectExists = await ProjectModel.findOne({
+        _id: projectId,
+        isDeleted: false,
+      });
     } catch (err) {
       return res.status(400).send("Project does not exists");
     }
     if (!checkIfProjectExists) {
       return res.status(400).send("Project does not exists");
     }
-    let tasks = await TaskModel.find({ projectId: projectId });
+    let tasks = await TaskModel.find({
+      projectId: projectId,
+      isDeleted: false,
+    });
     tasks = tasks.map((task) => task._id);
     return res.status(200).send(tasks);
   },
@@ -63,7 +72,10 @@ const TaskController = {
       req.body;
     let checkIfTaskExists;
     try {
-      checkIfTaskExists = await TaskModel.findOne({ _id: taskId });
+      checkIfTaskExists = await TaskModel.findOne({
+        _id: taskId,
+        isDeleted: false,
+      });
     } catch (err) {
       return res.status(400).send("Task does not exists");
     }
@@ -87,11 +99,10 @@ const TaskController = {
     return res.status(200).send("Task updated successfully");
   },
   deleteTaskById: async (req, res) => {
-    // Delete a task by its ID
     const { taskId } = req.params;
 
     try {
-      const task = await TaskModel.findOne({ _id: taskId });
+      const task = await TaskModel.findOne({ _id: taskId, isDeleted: false });
       if (!task) {
         return res.status(404).send("Task not found");
       }
@@ -102,22 +113,6 @@ const TaskController = {
     } catch (error) {
       return res.status(500).send("Something went wrong");
     }
-  },
-  getTasksByUserId: async (req, res) => {
-    // Get all tasks assigned to a user :: getMyTasks
-    const { userId } = req.params;
-    let checkIfUserExists;
-    try {
-      checkIfUserExists = await UserModel.findOne({ _id: userId });
-    } catch (err) {
-      return res.status(400).send("User does not exists");
-    }
-    if (!checkIfUserExists) {
-      return res.status(400).send("User does not exists");
-    }
-    let tasks = await TaskModel.find({ createdBy: userId });
-    tasks = tasks.map((task) => task._id);
-    return res.status(200).send(tasks);
   },
 };
 

@@ -29,6 +29,15 @@ const AuthenticationMiddleware = {
     );
     return TOKEN;
   },
+  verifyEmailToken: async (token) => {
+    try {
+      let decodedToken = decodeURIComponent(token);
+      let decoded = jwt.verify(decodedToken, ACCESS_TOKEN);
+      return decoded;
+    } catch (error) {
+      return false;
+    }
+  }
 };
 
 module.exports = AuthenticationMiddleware;

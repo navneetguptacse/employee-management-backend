@@ -1,80 +1,84 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 var userSchema = mongoose.Schema({
-    employeeName:{
-        type:String,
-        required: true,
-    },
-    dob:{
-        type:Date,
-        required: true,
-    },
-    username:{
-        type:String,
-        required: true,
-    },
-    phoneNumber: {
-        type:Number,
-        required: true,
-    },
-    email:{
-        type:String,
-        required: true,
-    },
-    password:{
-        type:String,
-        required: true,
-    },
-    address:{
-        type: String,
-        required: false,
-    },
-    salary:{
-        type: Number,
-        required: false,
-    },
-    tasks:{
-        type:[mongoose.Schema.Types.ObjectId],
-        ref:'Task',
-        required: false, 
-    },
-    createdAt:{
-        default:new Date(),
-        type:Date,
-        required: false,
-    },
-    isDeleted:{
-        type:Boolean,
-        required: false,
-    },
-    isDisabled:{
-        type:Boolean,
-        default:false,
-    },
-    isVerified: {
-        type:Boolean,
-        default:false,
-    }, 
-    aadhar:{
-        type:String, 
-        required: false,
-    },
-    photo:{
-        type:String,
-        required: false,
-    },
-    pan:{
-        type:String,
-        required: false,
-    },
-    projects :{
-        type: [mongoose.Schema.Types.Object],
-        ref: "Project",
-        required: false
-    }
+  employeeName: {
+    type: String,
+    required: true,
+  },
+  dob: {
+    type: Date,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: Number,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  salary: {
+    type: Number,
+    required: false,
+  },
+  tasks: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Task",
+    required: false,
+  },
+  isDeleted: {
+    type: Boolean,
+    required: false,
+  },
+  isCreatedAt: {
+    type: Date,
+    default: new Date(),
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  address: {
+    type: String,
+    required: false,
+  },
+  aadharNumber: {
+    type: String,
+    required: false,
+  },
+  panCard: {
+    type: String,
+    required: false,
+  },
+  photo: {
+    type: String,
+    required: false,
+  },
+  projects: {
+    type: [mongoose.Schema.Types.Object],
+    ref: "Project",
+    required: false,
+  },
 });
 
-module.exports=mongoose.model('User',userSchema);
+module.exports = mongoose.model("User", userSchema);
 
 /* 
     Image Storage Strategy:

@@ -3,7 +3,9 @@ var UserModel = require("../model/users.model");
 
 const ProjectController = {
   create: async (req, res) => {
-    var { projectName, projectDescription, createdBy } = req.body;
+    var { projectName, projectDescription } = req.body;
+
+    var createdBy = req.user.id;
 
     let checkIfUserExists;
     try {
@@ -48,8 +50,8 @@ const ProjectController = {
     }
     return res.status(200).send(project);
   },
-  getProjectByUserId: async (req, res) => {
-    let { userId } = req.params;
+  getProjectByUser: async (req, res) => {
+    let userId = req.user.id;
     let user;
     try {
       user = await UserModel.findOne({ _id: userId });
@@ -95,9 +97,9 @@ const ProjectController = {
     return res.status(200).send("Project assigned successfully");
   },
   updateProjectById: async (req, res) => {
-    // Update a project by its ID
     var { projectId } = req.params;
-    var { projectName, projectDescription } = req.body;
+    var { projectName, projectDescription, isCompleted, projectMembers } =
+      req.body;
 
     let checkIfProjectExists;
     try {
@@ -105,59 +107,56 @@ const ProjectController = {
     } catch (err) {
       return res.status(400).send("Project does not exists");
     }
-    if (!checkIfProjectExists) {
-      return res.status(400).send("Project does not exists");
+
+    if (projectMembers) {
+      if (projectMembers.length > 0) {
+        let combinedProjectMembers = [
+          ...checkIfProjectExists.projectMembers,
+          ...projectMembers,
+        ];
+        let uniqueProjectMembers = [...new Set(combinedProjectMembers)];
+        checkIfProjectExists.projectMembers = uniqueProjectMembers;
+      }
     }
 
-    let updateProject = await ProjectModel.updateOne(
-      { _id: projectId },
-      {
-        projectName,
-        projectDescription,
-        updatedAt: new Date(),
-      }
-    );
-    if (!updateProject) {
-      return res.status(500).send("Project not updated something went wrong");
+    if (projectName) {
+      checkIfProjectExists.projectName = projectName;
+    }
+    if (projectDescription) {
+      checkIfProjectExists.projectDescription = projectDescription;
+    }
+    if (isCompleted) {
+      checkIfProjectExists.isCompleted = isCompleted;
+    }
+
+    checkIfProjectExists.updatedAt = Date.now();
+    checkIfProjectExists.updatedBy = req.user.id;
+
+    let ifProjectSaved = await checkIfProjectExists.save();
+    if (!ifProjectSaved) {
+      return res.status(500).send("Something went wrong");
     }
     return res.status(200).send("Project updated successfully");
   },
   deleteProjectById: async (req, res) => {
-    // Delete a project by its ID
-    const { projectId } = req.params;
-
+    var { projectId } = req.params;
+    let checkIfProjectExists;
     try {
-      const project = await ProjectModel.findOne({ _id: projectId });
-      if (!project) {
-        return res.status(404).send("Project not found");
-      }
-      project.isDeleted = true;
-      await project.save();
+      checkIfProjectExists = await ProjectModel.findOne({
+        _id: projectId,
+        isDeleted: false,
+      });
+    } catch (err) {
+      return res.status(400).send("Project does not exists");
+    }
 
-      return res.status(200).send("Project deleted successfully");
-    } catch (error) {
+    checkIfProjectExists.isDeleted = true;
+
+    let ifProjectSaved = await checkIfProjectExists.save();
+    if (!ifProjectSaved) {
       return res.status(500).send("Something went wrong");
     }
-  },
-  getProjectByUserId: async (req, res) => {
-    // Get projects by user ID
-    let { userId } = req.params;
-    let user;
-    try {
-      user = await UserModel.findOne({ _id: userId });
-    } catch (err) {
-      return res.status(404).send("User does not exist");
-    }
-
-    let projects = await ProjectModel.find({
-      projectMembers: userId,
-      isDeleted: false,
-    });
-
-    if (!projects || projects.length === 0) {
-      return res.status(404).send("Projects not found");
-    }
-    return res.status(200).send(projects);
+    return res.status(200).send("Project deleted successfully");
   },
 };
 

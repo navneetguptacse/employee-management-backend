@@ -26,9 +26,9 @@ router.get(
 
 // Get projects by user ID
 router.get(
-  "/getProjectByUserId/:userId",
+  "/getProjectByUser",
   authenticationMiddleware.authenticate,
-  projectController.getProjectByUserId
+  projectController.getProjectByUser
 );
 
 // Assign projects to Users
@@ -43,20 +43,6 @@ router.put(
   "/updateProjectById/:projectId",
   authenticationMiddleware.authenticate,
   projectController.updateProjectById
-);
-
-// Delete project by projectID
-router.delete(
-  "/deleteProjectById/:projectId",
-  authenticationMiddleware.authenticate,
-  projectController.deleteProjectById
-);
-
-// Get project by User ID
-router.get(
-  "/getProjectByUserId/:userId",
-  authenticationMiddleware.authenticate,
-  projectController.getProjectByUserId
 );
 
 module.exports = router;
